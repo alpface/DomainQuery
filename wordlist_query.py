@@ -11,6 +11,12 @@ from bs4 import BeautifulSoup
 import itertools
 from urllib.request import urlopen
 import os
+import urllib
+
+header = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 UBrowser/6.1.2107.204 Safari/537.36'
+}
+
 
 class colors:
     BLACK = '\033[0;30m'
@@ -59,12 +65,15 @@ with open('wordlist.txt', 'r+') as f:
             line = line.strip('\n')
         # 如果有空格，且低于15未的，剪切掉空格
         if ' ' in line:
-            if len(line) <= 15:
-                line = line.replace(' ', '')
+            if domain_extension == 'com':
+                if len(line) <= 8:
+                    line = line.replace(' ', '')
             else:
                 continue
+
         domain_name = line + "." + domain_extension
-        domains.append(domain_name)
+        if domain_name not in domains:
+            domains.append(domain_name)
 
 
 try:
@@ -76,14 +85,19 @@ try:
             # 如果domain中包含\n就剪切掉
             domain_name = line.strip('\n')
         # response = requests.get("http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain_name).content.decode("utf-8")
-        query = urlopen("http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain_name)
+
+        url = "http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain_name
+        # 在request中添加headers
+        request = urllib.request.Request(url, headers=header)
+        query = urlopen(request)
+
         response = query.read().decode('utf-8')
         soup = BeautifulSoup(response, 'html.parser')
         http_code = soup.returncode.string.strip()
         query_domain = soup.key.string.strip()
         query_result = soup.original.string.split(":")[0].strip()
 
-        time.sleep(1)
+        time.sleep(0.5)
 
         if http_code == '200' and query_result == '210':  # domain可以注册
             print(

@@ -25,8 +25,9 @@ def get_urlhtml(url):  # 爬取主页
         else:  # 否则返回空
             print('解析失败')
             return None
-    except:  # 发生异常返回空
+    except Exception as e:  # 发生异常返回空
         print('解析失败')
+        print(e.__str__())
         return None
 
 
@@ -98,7 +99,7 @@ def cucun(word_mause):  # 爬取数据到数据库
 
 
 def creat_table():  # 创建一个表
-    db = pymysql.connect(host='localhost', user='root', password='root', db='mysql', port=3306, charset="utf8")
+    db = pymysql.connect(host='localhost', user='root', password='root', db='movie', port=3306, charset="utf8")
     print('打开数据库成功')
     cursor = db.cursor()
     sql = 'CREATE TABLE IF NOT EXISTS word (id VARCHAR(255) NOT NULL,fayin VARCHAR(255) NOT NULL,fanyi VARCHAR(255) NOT NULL,music VARCHAR(255) NOT NULL,word_tream VARCHAR(255) NOT NULL, PRIMARY KEY (id))'
