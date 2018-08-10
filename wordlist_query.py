@@ -53,14 +53,14 @@ with open('wordlist.txt', 'r+') as f:
     # 读取所有单词
     lines = f.readlines()
     # 组合单词为用户输入的domain
-    for line in lines:
+    for line in reversed(lines):
         if '\n' in line:
             # 去掉换行符
             line = line.strip('\n')
         # 如果有空格，且低于15未的，剪切掉空格
         if ' ' in line:
             if len(line) <= 15:
-                line.replace(' ', '')
+                line = line.replace(' ', '')
             else:
                 continue
         domain_name = line + "." + domain_extension
