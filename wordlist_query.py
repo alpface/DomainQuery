@@ -59,19 +59,21 @@ with open('wordlist.txt', 'r+') as f:
     # 读取所有单词
     lines = f.readlines()
     # 组合单词为用户输入的domain
-    for line in reversed(lines):
+    for line in  lines: # reversed(lines): # 倒序遍历
         if '\n' in line:
             # 去掉换行符
             line = line.strip('\n')
         # 如果有空格，且低于15未的，剪切掉空格
         if ' ' in line:
             if domain_extension == 'com':
-                if len(line) <= 8:
+                if len(line) <= 7:
                     line = line.replace(' ', '')
             else:
                 continue
-
-        domain_name = line + "." + domain_extension
+        if len(line):
+            domain_name = line + "." + domain_extension
+        else:
+            continue
         if domain_name not in domains:
             domains.append(domain_name)
 
@@ -92,10 +94,17 @@ try:
         query = urlopen(request)
 
         response = query.read().decode('utf-8')
-        soup = BeautifulSoup(response, 'html.parser')
-        http_code = soup.returncode.string.strip()
-        query_domain = soup.key.string.strip()
-        query_result = soup.original.string.split(":")[0].strip()
+        if response is not None:
+            soup = BeautifulSoup(response, 'html.parser')
+            returncode = soup.returncode
+            http_code = '-1'
+            if returncode is not None and hasattr(returncode, 'string'):
+                http_code = soup.returncode.string.strip()
+            query_domain = soup.key.string.strip()
+            query_result = soup.original.string.split(":")[0].strip()
+        else:
+            http_code = '-1'
+            query_result = '-1'
 
         time.sleep(0.5)
 

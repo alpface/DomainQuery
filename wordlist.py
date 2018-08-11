@@ -79,37 +79,37 @@ def paqumusci(reponse):  # 爬取音频
 
 def cucun(word_mause):  # 爬取数据到数据库
     # 解决UnicodeEncodeError: 'latin-1' codec can't encode characters in position 69-70: ordinal not in range(256)，加入charset="utf8"
-    db = pymysql.connect(host='localhost', user='root', password='root', db='mysql', port=3306, charset="utf8")  # 打开数据库
+    # db = pymysql.connect(host='localhost', user='root', password='root', db='mysql', port=3306, charset="utf8")  # 打开数据库
     print('打开数据库成功')
-    cursor = db.cursor()  # 创建一个游标
+    # cursor = db.cursor()  # 创建一个游标
     with open('wordlist.txt', 'a+') as f:
         for key in word_mause:  # word_mause是一个字典，模型：{'comment': ['[ˈkɔment]', 'n. 评论，意见；体现，写照', '四级必备词汇']}
             f.writelines(key + '\n')
-            sql = 'INSERT INTO word(id, fayin, fanyi, music, word_tream) values(%s, %s, %s, %s, %s)'  # 构造sql语句
-            try:
-                cursor.execute(sql,
-                            (key, word_mause[key][0], word_mause[key][1], 'music/' + key + '.mp3', word_mause[key][2]))
-                db.commit()  # 插入数据
-            except Exception as e:
-                db.rollback()  # 如果发生异常，则回滚（什么事情都没有发生）
-                print(e.__str__())
+            # sql = 'INSERT INTO word(id, fayin, fanyi, music, word_tream) values(%s, %s, %s, %s, %s)'  # 构造sql语句
+            # try:
+                # cursor.execute(sql,
+                #             (key, word_mause[key][0], word_mause[key][1], 'music/' + key + '.mp3', word_mause[key][2]))
+                # db.commit()  # 插入数据
+            # except Exception as e:
+                # db.rollback()  # 如果发生异常，则回滚（什么事情都没有发生）
+                # print(e.__str__())
         print('数据插入成功')
-        db.close()  # 关闭数据库，记得一定要记得关闭数据库
-        print('数据库成功关闭')
+        # db.close()  # 关闭数据库，记得一定要记得关闭数据库
+        # print('数据库成功关闭')
 
 
-def creat_table():  # 创建一个表
-    db = pymysql.connect(host='localhost', user='root', password='root', db='movie', port=3306, charset="utf8")
-    print('打开数据库成功')
-    cursor = db.cursor()
-    sql = 'CREATE TABLE IF NOT EXISTS word (id VARCHAR(255) NOT NULL,fayin VARCHAR(255) NOT NULL,fanyi VARCHAR(255) NOT NULL,music VARCHAR(255) NOT NULL,word_tream VARCHAR(255) NOT NULL, PRIMARY KEY (id))'
-    cursor.execute(sql)
-    print('创建表成功')
-    db.close()
+# def creat_table():  # 创建一个表
+#     db = pymysql.connect(host='localhost', user='root', password='root', db='movie', port=3306, charset="utf8")
+#     print('打开数据库成功')
+#     cursor = db.cursor()
+#     sql = 'CREATE TABLE IF NOT EXISTS word (id VARCHAR(255) NOT NULL,fayin VARCHAR(255) NOT NULL,fanyi VARCHAR(255) NOT NULL,music VARCHAR(255) NOT NULL,word_tream VARCHAR(255) NOT NULL, PRIMARY KEY (id))'
+#     cursor.execute(sql)
+#     print('创建表成功')
+#     db.close()
 
 
 def main():
-    creat_table()  # 创建一个表
+    # creat_table()  # 创建一个表
     url = 'http://word.iciba.com/'
     html = get_urlhtml(url)  # 得到首页的H5代码
     word_all = get_url(html)  # 得到所有classid可能取值的列表
