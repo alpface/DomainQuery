@@ -68,8 +68,12 @@ with open('wordlist.txt', 'r+') as f:
             if domain_extension == 'com':
                 if len(line) <= 7:
                     line = line.replace(' ', '')
+                else:
+                    continue
             else:
                 continue
+        if len(line) > 5 and domain_extension != 'com':
+            continue
         if len(line):
             domain_name = line + "." + domain_extension
         else:
@@ -91,8 +95,10 @@ try:
         url = "http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain_name
         # 在request中添加headers
         request = urllib.request.Request(url, headers=header)
-        query = urlopen(request)
-
+        try:
+            query = urlopen(request)
+        except Exception as error :
+            continue
         response = query.read().decode('utf-8')
         if response is not None:
             soup = BeautifulSoup(response, 'html.parser')
@@ -100,8 +106,13 @@ try:
             http_code = '-1'
             if returncode is not None and hasattr(returncode, 'string'):
                 http_code = soup.returncode.string.strip()
-            query_domain = soup.key.string.strip()
-            query_result = soup.original.string.split(":")[0].strip()
+            soup_key = soup.key
+            query_domain = line
+            if soup_key is not None and hasattr(soup_key, 'string'):
+                query_domain = soup.key.string.strip()
+            query_result = '-1'
+            if soup.original is not None and hasattr(soup.original, 'string'):
+                query_result = soup.original.string.split(":")[0].strip()
         else:
             http_code = '-1'
             query_result = '-1'
