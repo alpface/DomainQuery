@@ -30,4 +30,4 @@ build/
 dist/
 .tox
 .idea
-pinyin_active.txt
+resource/pyim-bigdict.txt

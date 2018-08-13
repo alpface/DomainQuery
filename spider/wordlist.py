@@ -82,7 +82,7 @@ def cucun(word_mause):  # 爬取数据到数据库
     # db = pymysql.connect(host='localhost', user='root', password='root', db='mysql', port=3306, charset="utf8")  # 打开数据库
     print('打开数据库成功')
     # cursor = db.cursor()  # 创建一个游标
-    with open('wordlist.txt', 'a+') as f:
+    with open('../resource/wordlist.txt', 'a+') as f:
         for key in word_mause:  # word_mause是一个字典，模型：{'comment': ['[ˈkɔment]', 'n. 评论，意见；体现，写照', '四级必备词汇']}
             f.writelines(key + '\n')
             # sql = 'INSERT INTO word(id, fayin, fanyi, music, word_tream) values(%s, %s, %s, %s, %s)'  # 构造sql语句

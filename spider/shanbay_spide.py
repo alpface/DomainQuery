@@ -78,7 +78,7 @@ def start(url,method):
     a=spide(url,method)
     a.queue(a.request(a.InitPage))
     Queue=dict(zip(a.M_queue,a.S_queue))
-    file = open('wordlist.txt', 'a+')
+    file = open('../resource/wordlist.txt', 'a+')
     for k in Queue.keys():
         N = int(int(Queue[k])/20)
         if int(Queue[k])%20!=0:
