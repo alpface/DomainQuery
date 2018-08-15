@@ -2,7 +2,7 @@
 # @Time    : 2018/8/13 下午3:56
 # @Author  : alpface
 # @Email   : xiaoyuan1314@me.com
-# @File    : pinyin_domains.py
+# @File    : query_aliyun.py
 # @Software: PyCharm
 
 import time, datetime

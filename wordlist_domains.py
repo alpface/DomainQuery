@@ -22,7 +22,7 @@ def getWordListDomains():
     # 输入domain后缀
     domain_extension = input("请输入domain后缀，比如：com ")
 
-    with open('resource/wordlist.txt', 'r+') as f:
+    with open('resource/wordsEn.txt', 'r+') as f:
         # 读取所有单词
         lines = f.readlines()
         # 组合单词为用户输入的domain
@@ -30,6 +30,10 @@ def getWordListDomains():
             if '\n' in line:
                 # 去掉换行符
                 line = line.strip('\n')
+            if '-' in line:
+                # 分割-
+                list = line.split('-')
+                line = list[0]
             # 如果有空格，且低于15未的，剪切掉空格
             if ' ' in line:
                 if domain_extension == 'com':
