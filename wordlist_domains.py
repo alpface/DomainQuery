@@ -45,6 +45,8 @@ def getWordListDomains():
                     continue
             if len(line) > 5 and domain_extension != 'com':
                 continue
+            if len(line) > 7:
+                continue
             if len(line):
                 domain_name = line + "." + domain_extension
             else:

@@ -59,60 +59,62 @@ def domainQueryFromAliyun(domains):
 
     print('拼音数据准备完成，开始查询，需要查询的数量:%s' % len(lines))
     query_idx = 0
-    with open('resource/active.txt', 'a+') as activeFile:
-        # 记录时间
-        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print('\n\n'+ current_time)
-        for line in lines:
-            domain_name = line
-            if '\n' in line:
-                # 如果domain中包含\n就剪切掉
-                domain_name = line.strip('\n')
-            # response = requests.get("http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain_name).content.decode("utf-8")
+    # 记录时间
+    current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print('\n\n' + current_time)
+    for line in lines:
+        domain_name = line
+        if '\n' in line:
+            # 如果domain中包含\n就剪切掉
+            domain_name = line.strip('\n')
+        # response = requests.get("http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain_name).content.decode("utf-8")
 
-            url = "http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain_name
-            # 在request中添加headers
-            request = urllib.request.Request(url, headers=header)
-            try:
-                query = urlopen(request, timeout=30)
-            except Exception as error:
-                continue
-            response = query.read().decode('utf-8')
-            if response is not None:
-                soup = BeautifulSoup(response, 'html.parser')
-                returncode = soup.returncode
-                http_code = '-1'
-                if returncode is not None and hasattr(returncode, 'string'):
-                    http_code = soup.returncode.string.strip()
-                soup_key = soup.key
-                query_domain = line
-                if soup_key is not None and hasattr(soup_key, 'string'):
-                    query_domain = soup.key.string.strip()
-                query_result = '-1'
-                if soup.original is not None and hasattr(soup.original, 'string'):
-                    query_result = soup.original.string.split(":")[0].strip()
-            else:
-                http_code = '-1'
-                query_result = '-1'
+        url = "http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=" + domain_name
+        # 在request中添加headers
+        request = urllib.request.Request(url, headers=header)
+        try:
+            query = urlopen(request, timeout=30)
+        except Exception as error:
+            continue
+        response = query.read().decode('utf-8')
+        if response is not None:
+            soup = BeautifulSoup(response, 'html.parser')
+            returncode = soup.returncode
+            http_code = '-1'
+            if returncode is not None and hasattr(returncode, 'string'):
+                http_code = soup.returncode.string.strip()
+            soup_key = soup.key
+            query_domain = line
+            if soup_key is not None and hasattr(soup_key, 'string'):
+                query_domain = soup.key.string.strip()
+            query_result = '-1'
+            if soup.original is not None and hasattr(soup.original, 'string'):
+                query_result = soup.original.string.split(":")[0].strip()
+        else:
+            http_code = '-1'
+            query_result = '-1'
 
-            time.sleep(0.5)
+        time.sleep(0.5)
 
-            if http_code == '200' and query_result == '210':  # domain可以注册
-                print(
-                    colors.YELLOW + "Very nice! domain: %s is available " % query_domain + colors.ENDC + ", query idx:%s" % query_idx)
+        if http_code == '200' and query_result == '210':  # domain可以注册
+            print(
+                colors.YELLOW + "Very nice! domain: %s is available " % query_domain + colors.ENDC + ", query idx:%s" % query_idx)
+            with open('resource/active.txt', 'a+') as activeFile:
                 # 将可以注册的domain写入到active.txt中
                 activeFile.write(query_domain + "\n")
 
-            elif http_code == '200' and query_result == '211':  # domain不可以注册
-                print("sory domain: %s is not available" % query_domain + ", query idx:%s" % query_idx)
+        elif http_code == '200' and query_result == '211':  # domain不可以注册
+            print("sory domain: %s is not available" % query_domain + ", query idx:%s" % query_idx)
 
-            elif query_result == '213':  # domain查询超时
-                print('domain: %s query timeout' % query_domain + ", query idx:%s" % query_idx)
+        elif query_result == '213':  # domain查询超时
+            print('domain: %s query timeout' % query_domain + ", query idx:%s" % query_idx)
 
-            else:
-                print("that is really bad!" + ", query idx:%s" % query_idx)
-                print(http_code)
-                print(query_domain)
-                print(query_result)
+        else:
+            print("that is really bad!" + ", query idx:%s" % query_idx)
+            print(http_code)
+            print(query_domain)
+            print(query_result)
 
-            query_idx += 1
+        query_idx += 1
+
+
