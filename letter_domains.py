@@ -23,7 +23,11 @@ def getLetterDomains():
         res = f.truncate(0)
 
         # 将字母拼接为每一个域名
-        for i in itertools.product("abcdefghijklmnopqrstuvwxyz", repeat=4):
+        alphabet = "abcdefghijklmnopqrstuvwxyz"
+        # 笛卡尔积
+        # 创建一个迭代器，生成表示item1，item2等中的项目的笛卡尔积的元组，repeat是一个关键字参数，指定重复生成序列的次数。
+        list = itertools.product(alphabet, repeat=4)
+        for i in list:
             domain_name = "".join(i) + "." + domain_extension
             domains.append(domain_name)
             domain_name += "\n"
