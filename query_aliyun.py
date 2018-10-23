@@ -52,6 +52,13 @@ def domainQueryFromAliyun(domains):
     :return:
     '''
 
+    with open('resource/active.txt', 'a+') as activeFile:
+        # 记录当前查询日期
+        isotimeformat = '%Y-%m-%d %H:%M:%S'
+        current_date = time.strftime(isotimeformat, time.localtime(time.time()))
+        activeFile.write(current_date + "\n")
+
+
     if len(domains) <= 0:
         return
 
@@ -104,9 +111,9 @@ def domainQueryFromAliyun(domains):
                 # 将可以注册的domain写入到active.txt中
                 activeFile.write(query_domain + "\n")
             # 当一个domain可以注册时，我们验证它相关的其他domain是否被注册了
-            name = domain_name.split(".")[0].strip()
-            list = domainQuertFromUniregistry(name)
-            print(str(len(list)) + '个 domain已注册：' + ','.join(list))
+            # name = domain_name.split(".")[0].strip()
+            # list = domainQuertFromUniregistry(name)
+            # print(str(len(list)) + '个 domain已注册：' + ','.join(list))
 
         elif http_code == '200' and query_result == '211':  # domain不可以注册
             print("sory domain: %s is not available" % query_domain + ", query idx:%s" % query_idx)
