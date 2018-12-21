@@ -45,32 +45,25 @@ class colors:
     ENDC = '\033[0m'
 
 
-def domainQueryFromAliyun(domains):
+def domainQueryFromAliyun(domains, timeInterval=0.5):
     '''
     通过万网查询域名
     :param domains: 需要查询的domain列表
     :return:
     '''
-
-    with open('resource/active.txt', 'a+') as activeFile:
-        # 记录当前查询日期
-        isotimeformat = '%Y-%m-%d %H:%M:%S'
-        current_date = time.strftime(isotimeformat, time.localtime(time.time()))
-        activeFile.write(current_date + "\n")
-
-
     if len(domains) <= 0:
         return
 
     # 读取所有需要查询的domain
     lines = domains
-
+    actives = []
     print('拼音数据准备完成，开始查询，需要查询的数量:%s' % len(lines))
     query_idx = 0
     # 记录时间
     current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print('\n\n' + current_time)
     for line in lines:
+
         domain_name = line
         if '\n' in line:
             # 如果domain中包含\n就剪切掉
@@ -102,9 +95,11 @@ def domainQueryFromAliyun(domains):
             http_code = '-1'
             query_result = '-1'
 
-        time.sleep(0.5)
+        if timeInterval > 0:
+            time.sleep(timeInterval)
 
         if http_code == '200' and query_result == '210':  # domain可以注册
+            actives.append(query_domain)
             print(
                 colors.YELLOW + "Very nice! domain: %s is available " % query_domain + colors.ENDC + ", query idx:%s" % query_idx)
             with open('resource/active.txt', 'a+') as activeFile:
@@ -128,6 +123,7 @@ def domainQueryFromAliyun(domains):
             print(query_result)
 
         query_idx += 1
+    return actives
 
 def domainQuertFromUniregistry(domain):
     '''
